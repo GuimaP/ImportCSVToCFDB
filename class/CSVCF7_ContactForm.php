@@ -36,4 +36,22 @@
 
       return $form;
     }
+
+    //Replace the keys that exists into contact form template 
+    public function replaceData($string, $index, $value){
+        $regex = '/\[('.$index.')\]/i';
+
+        return preg_replace($regex, $value, $string);
+    }
+
+
+    //Replace the keys that exists into string
+    public function replaceSubject($string,Array $keys){
+      $subject = $string;
+      foreach ($keys as $key => $value) {
+        $regex = '/\[('.$key.')\]/i';
+        $subject = preg_replace($regex, $value, $subject);
+      }
+      return $subject;
+    }
   }

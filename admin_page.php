@@ -38,11 +38,6 @@ if (isset($_REQUEST['save_options']) && $_REQUEST['save_options'] == 'Y') {
 
 
 
-        echo "<pre>";
-        var_dump($form);
-        echo "</pre>";
-
-
         //Read CSV file
         $xml = new CSVCF7_CSV($arquivo);
 
@@ -57,34 +52,30 @@ if (isset($_REQUEST['save_options']) && $_REQUEST['save_options'] == 'Y') {
           //Pega os dados de disparo do contact form
           $mail = get_post_meta($form['id'],'_mail',true);
 
-          // echo "<pre>";
-          // var_dump($mail);
-          // echo "</pre>";
-          //
-          //
-          //
-          // echo "<pre>";
-          // var_dump($item);
-          // echo "</pre>";
+
 
 
           foreach ($item as $key => $value) {
-            $mail['body'] = replaceData($mail['body'],$key,$value);
+            $mail['body'] = $csvcf7->replaceData($mail['body'],$key,$value);
           }
 
 
-          //Pega o email FROM do formulario
+
+
+
+          //Pega o email FROM e assunto  do formulario
           $mail_from = $mail['recipient'];
-          $mail_subject = $mail['subject'];
+          $mail_subject = $csvcf7->replaceSubject($mail['subject'],$item);
           $template = $mail['body'];
 
-          
 
-          $mailler->to($item['mail'])->from($mail_from)->subject($mail['subject'])->setTemplate($template)->send($item);
+
+          $mailler->to($item['mail'])->from($mail_from)->subject($mail_subject)->setTemplate($template)->send($item);
 
           /*Bloco para disparo de e-mail*/
 
-          // $db->insert($item,$xml->getHeader() ,$form['title']);
+          //Insert into Database Plugin
+          $db->insert($item,$xml->getHeader() ,$form['title']);
           # code...
         }
       }
@@ -102,11 +93,7 @@ if (isset($_REQUEST['save_options']) && $_REQUEST['save_options'] == 'Y') {
 
 
 
-function replaceData($string, $index, $value){
-    $regex = '/\[('.$index.')\]/i';
 
-    return preg_replace($regex, $value, $string);
-}
 
 
 include "template/admin_html.php";

@@ -47,9 +47,9 @@
 
     public function send(){
 
-        $from = "From: ".get_bloginfo('name') ." <".$this->from.">";
-        $headers[] = $from;
-        echo $this->to. " -- " . $this->subject. " -- " . $this->template. " -- <br/>" ;
+        $headers = array();
+        $headers[] = 'Content-Type: text/html; charset=UTF-8';
+        $headers[] = "From: ".get_bloginfo('name') ." <".$this->from.">";
         wp_mail( $this->to, $this->subject, $this->template,$headers );
     }
   }
